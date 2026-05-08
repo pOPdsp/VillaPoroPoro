@@ -134,14 +134,18 @@
           <button class="add-to-cart" onclick="addToCart('Continental Sunrise',14,'Morning meal')">Add +</button>
         </div>
       </div>
-      <div class="menu-card">
-        <div class="menu-card-body">
-        <div class="menu-card-category">Midday</div>
-        <h3>Casado del Día</h3>
-        <p>The classic Costa Rican plate — rice, beans, salad, fried plantains, and your choice of grilled fish or chicken.</p>
-        <div class="menu-card-footer">
-          <span class="menu-price">$22</span>
-          <button class="add-to-cart" onclick="addToCart('Casado del Día',22,'Lunch')">Add +</button>
+      <div class="menu-card" style="position:relative;overflow:hidden;padding:0;border:1px solid rgba(201,169,110,0.08)">
+        <div style="height:200px;overflow:hidden">
+          <img src="img/menu-tropical-fruits.jpg" alt="Tropical Fruit Breakfast" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+        <div style="padding:1.75rem">
+          <div class="menu-card-category">Morning · Fresh & Light</div>
+          <h3>Tropical Fruit Breakfast</h3>
+          <p>A generous platter of seasonal tropical fruits — watermelon, pineapple, papaya, and banana — served with freshly squeezed orange juice on our open-air terrace.</p>
+          <div class="menu-card-footer">
+            <span class="menu-price">$12</span>
+            <button class="add-to-cart" onclick="addToCart('Tropical Fruit Breakfast',12,'Breakfast · Private chef')">Add +</button>
+          </div>
         </div>
       </div>
       <div class="menu-card" style="position:relative;overflow:hidden;padding:0;border:1px solid rgba(201,169,110,0.08)">
