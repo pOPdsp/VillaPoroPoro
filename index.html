@@ -12,17 +12,45 @@
 <!-- LOGIN OVERLAY -->
 <div id="loginOverlay">
   <div class="login-bg"></div>
-  <div class="login-box">
+
+  <!-- PANTALLA 1: elegir modo -->
+  <div class="login-box" id="screenChoice">
     <h1>Villa Poroporo</h1>
     <p class="sub">Montano · Guanacaste · Costa Rica</p>
-    <input type="text" id="guestName" placeholder="Full Name" />
-    <div class="dates-row">
-      <input type="date" id="checkin" placeholder="Check-in" />
-      <input type="date" id="checkout" placeholder="Check-out" />
-    </div>
-    <button class="btn-gold" onclick="enterWithLogin()">Welcome — Enter</button>
-    <button class="btn-ghost" onclick="enterGuest()">Continue as Guest</button>
+    <div style="height:1px;background:rgba(201,169,110,0.2);margin-bottom:2.5rem"></div>
+    <button class="btn-gold" onclick="showScreen('screenLogin')">I already have an account</button>
+<button class="btn-ghost" onclick="showScreen('screenRegister')">Create an account</button>
+    <button class="btn-ghost" style="margin-top:0.5rem;opacity:0.5" onclick="enterGuest()">Continue as Guest</button>
   </div>
+
+  <!-- PANTALLA 2: login con email -->
+  <div class="login-box" id="screenLogin" style="display:none">
+    <h1>Villa Poroporo</h1>
+    <p class="sub">Welcome back</p>
+    <div style="height:1px;background:rgba(201,169,110,0.2);margin-bottom:2.5rem"></div>
+    <input type="email" id="loginEmail" placeholder="Your email address" />
+    <p class="login-hint">Enter the email you registered with</p>
+    <button class="btn-gold" onclick="doLogin()">Sign In</button>
+    <button class="btn-ghost" onclick="showScreen('screenChoice')">← Back</button>
+  </div>
+
+  <!-- PANTALLA 3: registro nuevo -->
+  <div class="login-box" id="screenRegister" style="display:none">
+    <h1>Villa Poroporo</h1>
+    <p class="sub">Create your account</p>
+    <div style="height:1px;background:rgba(201,169,110,0.2);margin-bottom:2.5rem"></div>
+    <input type="text"   id="guestName"   placeholder="Full name" />
+    <input type="email"  id="guestEmail"  placeholder="Email address" />
+    <div class="dates-row">
+      <input type="date" id="checkin" />
+      <input type="date" id="checkout" />
+    </div>
+    <p class="dates-label">Check-in · Check-out</p>
+    <input type="number" id="guestNights" placeholder="Nights" min="1" max="60" />
+    <button class="btn-gold" onclick="enterWithLogin()">Register — Enter</button>
+    <button class="btn-ghost" onclick="showScreen('screenChoice')">← Back</button>
+  </div>
+
 </div>
 
 <!-- CART PANEL -->

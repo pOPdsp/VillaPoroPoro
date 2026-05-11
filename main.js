@@ -1,19 +1,78 @@
 let cart = [];
 let guestData = {};
 
+// NUEVO
 function enterWithLogin(){
-  const name = document.getElementById('guestName').value.trim();
-  const ci = document.getElementById('checkin').value;
-  const co = document.getElementById('checkout').value;
-  if(!name){showNotif('Please enter your name');return;}
-  guestData = {name,checkin:ci,checkout:co};
-  hideLogin();
+  const name   = document.getElementById('guestName').value.trim();
+  const email  = document.getElementById('guestEmail').value.trim();
+  const nights = document.getElementById('guestNights').value.trim();
+  const ci     = document.getElementById('checkin').value;
+  const co     = document.getElementById('checkout').value;
+
+  if(!name)  { showNotif('Please enter your full name'); return; }
+  if(!email || !email.includes('@')) { showNotif('Please enter a valid email'); return; }
+  if(!nights || nights < 1) { showNotif('Please enter number of nights'); return; }
+  if(!ci)    { showNotif('Please select a check-in date'); return; }
+  if(!co)    { showNotif('Please select a check-out date'); return; }
+  if(co <= ci){ showNotif('Check-out must be after check-in'); return; }
+
+  guestData = { name, email, nights, checkin: ci, checkout: co };
+
+const regUrl = 'https://script.google.com/macros/s/AKfycbwmLLkgCXaOEl4dC0jjzSP59MecfsveCkpNWho0KJD9swlPw7pv7VoU241TvpT4KQB5/exec'
+  + '?type=register'
+  + '&name='     + encodeURIComponent(name)
+  + '&email='    + encodeURIComponent(email)
+  + '&checkin='  + encodeURIComponent(ci)
+  + '&checkout=' + encodeURIComponent(co)
+  + '&nights='   + encodeURIComponent(nights);
+
+fetch(regUrl, { method: 'GET', mode: 'no-cors' })
+  .catch(err => console.log('Sheet error:', err));
+
+hideLogin();
 }
 function enterGuest(){guestData={};hideLogin();}
 function hideLogin(){
   const lo = document.getElementById('loginOverlay');
   lo.style.opacity='0';lo.style.transition='opacity 0.8s';
   setTimeout(()=>{lo.style.display='none';startHeroAnim();},800);
+}
+// Navegar entre pantallas del login
+function showScreen(id){
+  document.getElementById('screenChoice').style.display  = 'none';
+  document.getElementById('screenLogin').style.display   = 'none';
+  document.getElementById('screenRegister').style.display= 'none';
+  document.getElementById(id).style.display = 'block';
+}
+
+// Login con email — busca en Google Sheets
+function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  if(!email || !email.includes('@')){
+    showNotif('Please enter a valid email');
+    return;
+  }
+
+  showNotif('Looking up your account...');
+
+  fetch('https://script.google.com/macros/s/AKfycbwmLLkgCXaOEl4dC0jjzSP59MecfsveCkpNWho0KJD9swlPw7pv7VoU241TvpT4KQB5/exec?email=' + encodeURIComponent(email))
+    .then(res => res.json())
+    .then(data => {
+      if(data.found){
+        guestData = {
+          name:     data.name,
+          email:    data.email,
+          checkin:  data.checkin,
+          checkout: data.checkout,
+          nights:   data.nights
+        };
+        showNotif('Welcome back, ' + data.name + '!');
+        setTimeout(() => hideLogin(), 1000);
+      } else {
+        showNotif('Email not found — have you registered yet?');
+      }
+    })
+    .catch(() => showNotif('Connection error, please try again'));
 }
 function startHeroAnim(){
   const els = ['h1','h2','h3','h4'];
@@ -36,6 +95,21 @@ function toggleCart(){
   document.getElementById('cartPanel').classList.toggle('open');
 }
 function addToCart(name,price,desc){
+  // Si entró como guest, redirigir al login
+  if(!guestData.email){
+    showNotif('Please sign in or register to add items');
+    setTimeout(()=>{
+      // Mostrar el overlay de login en la pantalla de elección
+      const lo = document.getElementById('loginOverlay');
+      lo.style.display = 'flex';
+      lo.style.opacity = '0';
+      lo.style.transition = 'opacity 0.5s';
+      showScreen('screenChoice');
+      setTimeout(()=>{ lo.style.opacity = '1'; }, 50);
+    }, 1200);
+    return;
+  }
+
   cart.push({name,price,desc,id:Date.now()});
   renderCart();
   showNotif(name + ' added to your order');
@@ -72,10 +146,33 @@ function renderCart(){
 }
 function checkout(){
   if(cart.length===0){showNotif('Your cart is empty');return;}
-  const name = guestData.name||'Guest';
-  const total = cart.reduce((s,i)=>s+i.price,0);
-  showNotif('Thank you, '+name+'! Order of $'+total+' confirmed.');
-  cart=[];renderCart();
+
+  const name     = guestData.name     || 'Guest';
+  const email    = guestData.email    || '';
+  const total    = cart.reduce((s,i)=>s+i.price,0);
+  const itemsStr = cart.map(i=>i.name+' ($'+i.price+')').join('|');
+
+  showNotif('Sending your order...');
+
+  const url = 'https://script.google.com/macros/s/AKfycbwmLLkgCXaOEl4dC0jjzSP59MecfsveCkpNWho0KJD9swlPw7pv7VoU241TvpT4KQB5/exec'
+    + '?type=order'
+    + '&name='     + encodeURIComponent(name)
+    + '&email='    + encodeURIComponent(email)
+    + '&checkin='  + encodeURIComponent(guestData.checkin  || '—')
+    + '&checkout=' + encodeURIComponent(guestData.checkout || '—')
+    + '&nights='   + encodeURIComponent(guestData.nights   || '—')
+    + '&items='    + encodeURIComponent(itemsStr)
+    + '&total='    + encodeURIComponent(total);
+
+  fetch(url, { method: 'GET', mode: 'no-cors' })
+    .catch(err => console.log('Order error:', err));
+
+  setTimeout(()=>{
+    showNotif('Thank you, '+name+'! Order confirmed — check your email.');
+  }, 1000);
+
+  cart=[];
+  renderCart();
   document.getElementById('cartPanel').classList.remove('open');
 }
 
@@ -86,7 +183,32 @@ function showNotif(msg){
 }
 
 // Init login defaults
-const today=new Date().toISOString().split('T')[0];
-const nextWeek=new Date(Date.now()+7*864e5).toISOString().split('T')[0];
-document.getElementById('checkin').value=today;
-document.getElementById('checkout').value=nextWeek;
+const today    = new Date().toISOString().split('T')[0];
+const nextWeek = new Date(Date.now() + 7 * 864e5).toISOString().split('T')[0];
+document.getElementById('checkin').value  = today;
+document.getElementById('checkout').value = nextWeek;
+document.getElementById('guestNights').value = 7;
+
+// Calcula noches cuando cambian las fechas
+function calcNights(){
+  const ci = document.getElementById('checkin').value;
+  const co = document.getElementById('checkout').value;
+  if(ci && co && co > ci){
+    const diff = Math.round((new Date(co) - new Date(ci)) / 864e5);
+    document.getElementById('guestNights').value = diff;
+  }
+}
+
+// Calcula checkout cuando cambian las noches
+function calcCheckout(){
+  const ci = document.getElementById('checkin').value;
+  const n  = parseInt(document.getElementById('guestNights').value);
+  if(ci && n > 0){
+    const co = new Date(new Date(ci).getTime() + n * 864e5).toISOString().split('T')[0];
+    document.getElementById('checkout').value = co;
+  }
+}
+
+document.getElementById('checkin').addEventListener('change', calcNights);
+document.getElementById('checkout').addEventListener('change', calcNights);
+document.getElementById('guestNights').addEventListener('input', calcCheckout);
