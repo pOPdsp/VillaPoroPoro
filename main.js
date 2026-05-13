@@ -18,18 +18,14 @@ function enterWithLogin(){
 
   guestData = { name, email, nights, checkin: ci, checkout: co };
 
-const regUrl = 'https://script.google.com/macros/s/AKfycbwmLLkgCXaOEl4dC0jjzSP59MecfsveCkpNWho0KJD9swlPw7pv7VoU241TvpT4KQB5/exec'
-  + '?type=register'
-  + '&name='     + encodeURIComponent(name)
-  + '&email='    + encodeURIComponent(email)
-  + '&checkin='  + encodeURIComponent(ci)
-  + '&checkout=' + encodeURIComponent(co)
-  + '&nights='   + encodeURIComponent(nights);
+  fetch('/.netlify/functions/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, checkin: ci, checkout: co, nights })
+  })
+  .catch(err => console.log('Register error:', err));
 
-fetch(regUrl, { method: 'GET', mode: 'no-cors' })
-  .catch(err => console.log('Sheet error:', err));
-
-hideLogin();
+  hideLogin();
 }
 function enterGuest(){guestData={};hideLogin();}
 function hideLogin(){
@@ -55,7 +51,7 @@ function doLogin(){
 
   showNotif('Looking up your account...');
 
-  fetch('https://script.google.com/macros/s/AKfycbwmLLkgCXaOEl4dC0jjzSP59MecfsveCkpNWho0KJD9swlPw7pv7VoU241TvpT4KQB5/exec?email=' + encodeURIComponent(email))
+  fetch('/.netlify/functions/login?email=' + encodeURIComponent(email))
     .then(res => res.json())
     .then(data => {
       if(data.found){
@@ -69,7 +65,8 @@ function doLogin(){
         showNotif('Welcome back, ' + data.name + '!');
         setTimeout(() => hideLogin(), 1000);
       } else {
-        showNotif('Email not found — have you registered yet?');
+        showNotif('Email not found — please register first');
+        setTimeout(() => showScreen('screenRegister'), 1800);
       }
     })
     .catch(() => showNotif('Connection error, please try again'));
@@ -145,33 +142,34 @@ function renderCart(){
   totalEl.textContent = '$'+total;
 }
 function checkout(){
-  if(cart.length===0){showNotif('Your cart is empty');return;}
+  if(cart.length === 0){ showNotif('Your cart is empty'); return; }
 
   const name     = guestData.name     || 'Guest';
   const email    = guestData.email    || '';
-  const total    = cart.reduce((s,i)=>s+i.price,0);
-  const itemsStr = cart.map(i=>i.name+' ($'+i.price+')').join('|');
+  const total    = cart.reduce((s,i) => s+i.price, 0);
+  const itemsStr = cart.map(i => i.name + ' ($' + i.price + ')').join('|');
 
   showNotif('Sending your order...');
 
-  const url = 'https://script.google.com/macros/s/AKfycbwmLLkgCXaOEl4dC0jjzSP59MecfsveCkpNWho0KJD9swlPw7pv7VoU241TvpT4KQB5/exec'
-    + '?type=order'
-    + '&name='     + encodeURIComponent(name)
-    + '&email='    + encodeURIComponent(email)
-    + '&checkin='  + encodeURIComponent(guestData.checkin  || '—')
-    + '&checkout=' + encodeURIComponent(guestData.checkout || '—')
-    + '&nights='   + encodeURIComponent(guestData.nights   || '—')
-    + '&items='    + encodeURIComponent(itemsStr)
-    + '&total='    + encodeURIComponent(total);
+  fetch('/.netlify/functions/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      email,
+      checkin:  guestData.checkin  || '—',
+      checkout: guestData.checkout || '—',
+      nights:   guestData.nights   || '—',
+      items:    itemsStr,
+      total
+    })
+  })
+  .then(() => {
+    setTimeout(() => showNotif('Thank you, ' + name + '! Order confirmed — check your email.'), 500);
+  })
+  .catch(() => showNotif('Error sending order, please try again'));
 
-  fetch(url, { method: 'GET', mode: 'no-cors' })
-    .catch(err => console.log('Order error:', err));
-
-  setTimeout(()=>{
-    showNotif('Thank you, '+name+'! Order confirmed — check your email.');
-  }, 1000);
-
-  cart=[];
+  cart = [];
   renderCart();
   document.getElementById('cartPanel').classList.remove('open');
 }
