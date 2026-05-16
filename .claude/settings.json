@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(node *)"
+    ],
+    "defaultMode": "dontAsk"
+  },
+  "defaultShell": "bash"
+}
+
+
