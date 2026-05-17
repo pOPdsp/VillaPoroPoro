@@ -1,30 +1,26 @@
 const { createClient } = require('@supabase/supabase-js');
 
-exports.handler = async (event) => {
-  if(event.httpMethod !== 'POST'){
-    return { statusCode: 405, body: 'Method not allowed' };
+module.exports = async (req, res) => {
+  if(req.method !== 'POST'){
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { name, email, checkin, checkout, nights } = JSON.parse(event.body);
+    const { name, email, checkin, checkout, nights } = req.body;
 
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_KEY
     );
 
-    // Verificar si el email ya existe
     const { data: existing } = await supabase
       .from('guests')
       .select('email')
       .eq('email', email.toLowerCase().trim())
-      .single();
+      .maybeSingle();
 
     if(existing){
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ result: 'ALREADY_EXISTS' })
-      };
+      return res.status(200).json({ result: 'ALREADY_EXISTS' });
     }
 
     const { error } = await supabase.from('guests').insert([{
@@ -37,7 +33,6 @@ exports.handler = async (event) => {
 
     if(error) throw error;
 
-    // Email de bienvenida
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -52,15 +47,10 @@ exports.handler = async (event) => {
       })
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ result: 'OK' })
-    };
+    return res.status(200).json({ result: 'OK' });
 
   } catch(error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ result: 'ERROR', error: error.message })
-    };
+    console.error('Register error:', error);
+    return res.status(500).json({ result: 'ERROR', error: error.message });
   }
 };

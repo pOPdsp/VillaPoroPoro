@@ -18,7 +18,7 @@ function enterWithLogin(){
 
   guestData = { name, email, nights, checkin: ci, checkout: co };
 
-  fetch('/.netlify/functions/register', {
+  fetch('/api/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, checkin: ci, checkout: co, nights })
@@ -51,7 +51,7 @@ function doLogin(){
 
   showNotif('Looking up your account...');
 
-  fetch('/.netlify/functions/login?email=' + encodeURIComponent(email))
+  fetch('/api/login?email=' + encodeURIComponent(email))
     .then(res => res.json())
     .then(data => {
       if(data.found){
@@ -151,7 +151,7 @@ function checkout(){
 
   showNotif('Sending your order...');
 
-  fetch('/.netlify/functions/order', {
+  fetch('/api/order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

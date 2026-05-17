@@ -1,24 +1,23 @@
 const { createClient } = require('@supabase/supabase-js');
 
-exports.handler = async (event) => {
-  if(event.httpMethod !== 'POST'){
-    return { statusCode: 405, body: 'Method not allowed' };
+module.exports = async (req, res) => {
+  if(req.method !== 'POST'){
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { name, email, checkin, checkout, nights, items, total } = JSON.parse(event.body);
+    const { name, email, checkin, checkout, nights, items, total } = req.body;
 
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_KEY
     );
 
-    // Buscar si el huésped ya tiene una orden y actualizar, si no crear nueva
     const { data: existing } = await supabase
       .from('orders')
       .select('id')
       .eq('email', email.toLowerCase().trim())
-      .single();
+      .maybeSingle();
 
     if(existing){
       await supabase.from('orders')
@@ -26,7 +25,7 @@ exports.handler = async (event) => {
           items,
           total: parseFloat(total),
           status: 'Pending',
-          created_at: new Date()
+          created_at: new Date().toISOString()
         })
         .eq('id', existing.id);
     } else {
@@ -42,7 +41,6 @@ exports.handler = async (event) => {
       }]);
     }
 
-    // Email de confirmación al cliente
     const numberedList = items.split('|')
       .map((item, i) => `${i+1}. ${item.trim()}`)
       .join('\n');
@@ -70,20 +68,15 @@ exports.handler = async (event) => {
           `Check-in:  ${checkin}\n` +
           `Check-out: ${checkout}\n` +
           `Nights:    ${nights}\n\n` +
-          `Our team will contact you shortly to confirm everything.\n\n` +
+          `Our team will contact you shortly.\n\n` +
           `Pura Vida,\nVilla Poroporo\nMontano · Guanacaste · Costa Rica`
       })
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ result: 'OK' })
-    };
+    return res.status(200).json({ result: 'OK' });
 
   } catch(error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ result: 'ERROR', error: error.message })
-    };
+    console.error('Order error:', error);
+    return res.status(500).json({ result: 'ERROR', error: error.message });
   }
 };
