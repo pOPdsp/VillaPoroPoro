@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
         from: 'Villa Poroporo <onboarding@resend.dev>',
         to: email,
         subject: '🌿 Welcome to Villa Poroporo',
-        text: `Dear ${name},\n\nYour account has been created successfully.\n\nCheck-in: ${checkin}\nCheck-out: ${checkout}\nNights: ${nights}\n\nPura Vida,\nVilla Poroporo\nMontano · Guanacaste · Costa Rica`
+        text: `Dear ${name},\n\nYour account has been created successfully.\n\nCheck-in: ${checkin}\nCheck-out: ${checkout}\nNights: ${nights}\n\nPura Vida,\nVilla Poroporo\nBagaces · Guanacaste · Costa Rica`
       })
     });
 

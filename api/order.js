@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
           `Check-out: ${checkout}\n` +
           `Nights:    ${nights}\n\n` +
           `Our team will contact you shortly.\n\n` +
-          `Pura Vida,\nVilla Poroporo\nMontano · Guanacaste · Costa Rica`
+          `Pura Vida,\nVilla Poroporo\nBagaces · Guanacaste · Costa Rica`
       })
     });
 
