@@ -145,100 +145,36 @@
       </div>
       <p class="text-muted">Our private restaurant — with a spectacular terrace overlooking the hills — is reserved exclusively for villa guests. Every meal is pre-booked and personally tailored to your preferences. Whether you want a traditional Costa Rican breakfast, a mountain picnic, or a candlelit dinner prepared by our private chef, we organise every detail for you. <span style="color:var(--gold);font-style:italic">All meals are prepared exclusively by our private chef.</span></p>
     </div>
-    <div class="menu-grid">
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;max-width:900px;margin:0 auto">
 
-  <!-- 1. Gallo Pinto -->
-  <div class="menu-card">
+  <!-- 1. Breakfast Package -->
+  <div class="menu-card" style="flex:0 1 350px">
     <div style="height:200px;overflow:hidden">
-      <img src="img/menu-gallo-pinto.jpg" alt="Gallo Pinto Breakfast" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+      <img src="img/menu-gallo-pinto.jpg" alt="Breakfast Package" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
     </div>
     <div style="padding:1.75rem">
       <div class="menu-card-category">Morning</div>
-      <h3>Gallo Pinto Breakfast</h3>
-      <p>Traditional rice & beans, farm eggs, ripe plantain, local cheese, and fresh tropical fruit bowl.</p>
+      <h3>Breakfast Package</h3>
+      <p>A complete breakfast experience prepared by our private chef, featuring traditional Costa Rican specialties and seasonal fresh fruits.</p>
       <div class="menu-card-footer">
-        <span class="menu-price">$18</span>
-        <button class="add-to-cart" onclick="addToCart('Gallo Pinto Breakfast',18,'Morning meal')">Add +</button>
+        <span class="menu-price">$25</span>
+        <button class="add-to-cart" onclick="addToCart('Breakfast Package',25,'Breakfast · Private chef')">Add +</button>
       </div>
     </div>
   </div>
 
-  <!-- 2. Continental Sunrise -->
-  <div class="menu-card">
+  <!-- 2. Dinner Package -->
+  <div class="menu-card" style="flex:0 1 350px">
     <div style="height:200px;overflow:hidden">
-      <img src="img/menu-continental-sunrise.png" alt="Continental Sunrise" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
-    </div>
-    <div style="padding:1.75rem">
-      <div class="menu-card-category">Morning</div>
-      <h3>Continental Sunrise</h3>
-      <p>Artisan bread, local honey, seasonal fruits, yogurt with granola, and freshly brewed Costa Rican coffee.</p>
-      <div class="menu-card-footer">
-        <span class="menu-price">$14</span>
-        <button class="add-to-cart" onclick="addToCart('Continental Sunrise',14,'Morning meal')">Add +</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. Tropical Fruit Breakfast -->
-  <div class="menu-card">
-    <div style="height:200px;overflow:hidden">
-      <img src="img/menu-tropical-fruits.jpg" alt="Tropical Fruit Breakfast" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
-    </div>
-    <div style="padding:1.75rem">
-      <div class="menu-card-category">Morning · Fresh & Light</div>
-      <h3>Tropical Fruit Breakfast</h3>
-      <p>A generous platter of seasonal tropical fruits — watermelon, pineapple, papaya, and banana — served with freshly squeezed orange juice on our open-air terrace.</p>
-      <div class="menu-card-footer">
-        <span class="menu-price">$12</span>
-        <button class="add-to-cart" onclick="addToCart('Tropical Fruit Breakfast',12,'Breakfast · Private chef')">Add +</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. Jungle Ceviche -->
-  <div class="menu-card">
-    <div style="height:200px;overflow:hidden">
-      <img src="img/menu-ceviche-corvina.jpg" alt="Jungle Ceviche" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
-    </div>
-    <div style="padding:1.75rem">
-      <div class="menu-card-category">Midday</div>
-      <h3>Jungle Ceviche</h3>
-      <p>Fresh corvina marinated in citrus, cilantro, red onion, and local ají dulce. Served with patacones.</p>
-      <div class="menu-card-footer">
-        <span class="menu-price">$16</span>
-        <button class="add-to-cart" onclick="addToCart('Jungle Ceviche',16,'Lunch')">Add +</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. Sunset Dinner Table -->
-  <div class="menu-card">
-    <div style="height:200px;overflow:hidden">
-      <img src="img/menu-sunset-dinner.png" alt="Sunset Dinner Table" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+      <img src="img/menu-sunset-dinner.png" alt="Dinner Package" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
     </div>
     <div style="padding:1.75rem">
       <div class="menu-card-category">Evening</div>
-      <h3>Sunset Dinner Table</h3>
-      <p>A curated three-course dinner with local produce, a daily catch, and a dessert of tropical sorbet.</p>
+      <h3>Dinner Package</h3>
+      <p>An elegant multi-course dinner with local produce and the daily catch, prepared by our private chef and served on our terrace overlooking the hills.</p>
       <div class="menu-card-footer">
-        <span class="menu-price">$38</span>
-        <button class="add-to-cart" onclick="addToCart('Sunset Dinner Table',38,'Dinner')">Add +</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6. Pancakes -->
-  <div class="menu-card">
-    <div style="height:200px;overflow:hidden">
-      <img src="img/menu-pancakes-breakfast.jpg" alt="Pancakes & Tropical Fruits" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;display:block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
-    </div>
-    <div style="padding:1.75rem">
-      <div class="menu-card-category">Morning · Sweet start</div>
-      <h3>Pancakes & Tropical Fruits</h3>
-      <p>Fluffy pancakes with fresh strawberries and blueberries, alongside a generous platter of seasonal tropical fruits — watermelon, mango, papaya — and freshly brewed Costa Rican coffee.</p>
-      <div class="menu-card-footer">
-        <span class="menu-price">$16</span>
-        <button class="add-to-cart" onclick="addToCart('Pancakes & Tropical Fruits',16,'Breakfast · Private chef')">Add +</button>
+        <span class="menu-price">$50</span>
+        <button class="add-to-cart" onclick="addToCart('Dinner Package',50,'Dinner · Private chef')">Add +</button>
       </div>
     </div>
   </div>
